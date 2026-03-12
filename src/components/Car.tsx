@@ -68,7 +68,6 @@ interface CarProps {
 
 export default function Car({ position, speed, messageIndex }: CarProps) {
     const groupRef = useRef<THREE.Group>(null);
-    const zStart = position[2];
     const showPhrases = useStore(state => state.showPhrases);
 
     // Each car will have its own current message index, initially offset by its prop
@@ -78,12 +77,10 @@ export default function Car({ position, speed, messageIndex }: CarProps) {
         if (groupRef.current) {
             groupRef.current.position.z += speed * delta;
 
-            // Reset car when it goes too far
-            if (groupRef.current.position.z > 20) {
-                // Teleport back
-                groupRef.current.position.z = zStart - 100;
-
-                // Pick a completely random new message index
+            // إعادة السيارة للخلف لتبدأ من جديد ودائماً أمام الكاميرا
+            if (groupRef.current.position.z > state.camera.position.z + 10) {
+                groupRef.current.position.z = state.camera.position.z - 80 - (Math.random() * 40);
+                // اختيار رسالة جديدة عشوائية
                 setCurrentIndex(Math.floor(Math.random() * messages.length));
             }
         }
@@ -135,38 +132,37 @@ export default function Car({ position, speed, messageIndex }: CarProps) {
             </mesh>
 
             {/* Floating Glowing Message */}
-            <Html
-                position={[0, 2.5, 0]}
-                center
-                transform
-                sprite
-                distanceFactor={6}
-                zIndexRange={[100, 0]}
-            >
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{
-                        opacity: showPhrases ? 1 : 0,
-                        scale: showPhrases ? 1 : 0.8
-                    }}
-                    transition={{ duration: 1.5, ease: "easeOut" }}
-                    style={{
-                        width: '300px',
-                        textAlign: 'center',
-                        fontFamily: 'var(--font-cairo), sans-serif',
-                        fontSize: '18px',
-                        fontWeight: 600,
-                        color: '#fff',
-                        textShadow: '0 0 10px rgba(255,100,150,0.8), 0 0 20px rgba(255,100,150,0.4)',
-                        background: 'radial-gradient(ellipse at center, rgba(255,100,150,0.15) 0%, rgba(0,0,0,0) 70%)',
-                        padding: '20px',
-                        borderRadius: '50%',
-                        pointerEvents: showPhrases ? 'auto' : 'none'
-                    }}
+            {showPhrases && (
+                <Html
+                    position={[0, 2.5, 0]}
+                    center
+                    transform
+                    sprite
+                    distanceFactor={6}
+                    zIndexRange={[100, 0]}
                 >
-                    {messages[currentIndex % messages.length]}
-                </motion.div>
-            </Html>
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 1.5, ease: "easeOut" }}
+                        style={{
+                            width: '300px',
+                            textAlign: 'center',
+                            fontFamily: 'var(--font-cairo), sans-serif',
+                            fontSize: '18px',
+                            fontWeight: 600,
+                            color: '#fff',
+                            textShadow: '0 0 10px rgba(255,100,150,0.8), 0 0 20px rgba(255,100,150,0.4)',
+                            background: 'radial-gradient(ellipse at center, rgba(255,100,150,0.15) 0%, rgba(0,0,0,0) 70%)',
+                            padding: '20px',
+                            borderRadius: '50%',
+                            pointerEvents: 'auto'
+                        }}
+                    >
+                        {messages[currentIndex % messages.length]}
+                    </motion.div>
+                </Html>
+            )}
         </group>
     );
 }
