@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-cairo);
+  --font-mono: var(--font-geist-mono);
+}
+
+:root {
+  --background: #000000;
+  --foreground: #ffffff;
+}
+
+@layer base {
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Important to keep the 3D canvas full screen with no scrollbars */
+    width: 100vw;
+    height: 100vh;
+    font-family: var(--font-cairo), sans-serif;
+  }
+
+  /* Custom selection styles for Arabic text if someone selects */
+  ::selection {
+    background: rgba(255, 60, 100, 0.4);
+    color: #fff;
+  }
+}
+
+/* Base styles to let react-three-fiber canvas fill everything */
+#root, #__next, main {
+  width: 100%;
+  height: 100%;
+}
