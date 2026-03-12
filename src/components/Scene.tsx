@@ -58,7 +58,7 @@ export default function Scene() {
                     <CarsManager />
 
                     {/* Post Processing for Cinematic Feel */}
-                    <EffectComposer disableNormalPass>
+                    <EffectComposer>
                         <Bloom
                             luminanceThreshold={0.5}
                             mipmapBlur
