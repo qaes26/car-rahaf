@@ -23,8 +23,9 @@ export default function Scene() {
         <div className="w-full h-full absolute inset-0 bg-black">
             <Canvas
                 shadows
+                dpr={[1, 1.5]}
                 camera={{ position: [0, 2, 8], fov: 60 }}
-                gl={{ antialias: true, powerPreference: "high-performance" }}
+                gl={{ antialias: false, powerPreference: "high-performance" }}
             >
                 <color attach="background" args={['#020205']} />
 
@@ -35,7 +36,7 @@ export default function Scene() {
                     position={[10, 20, -10]}
                     intensity={0.5}
                     color="#a0c0ff"
-                    shadow-mapSize={[2048, 2048]}
+                    shadow-mapSize={[1024, 1024]}
                 />
 
                 <Suspense fallback={null}>
@@ -63,12 +64,6 @@ export default function Scene() {
                             luminanceThreshold={0.5}
                             mipmapBlur
                             intensity={1.2}
-                        />
-                        <DepthOfField
-                            focusDistance={0}
-                            focalLength={0.02}
-                            bokehScale={2}
-                            height={480}
                         />
                     </EffectComposer>
                 </Suspense>

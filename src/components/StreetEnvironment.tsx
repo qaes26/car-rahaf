@@ -44,7 +44,7 @@ export default function StreetEnvironment() {
             >
                 <MeshReflectorMaterial
                     blur={[300, 100]}
-                    resolution={1024}
+                    resolution={512}
                     mixBlur={1}
                     mixStrength={80}
                     roughness={0.8}
@@ -93,14 +93,6 @@ export default function StreetEnvironment() {
                     <Box args={[0.8, 0.2, 0.4]} position={[l.x < 0 ? 0.4 : -0.4, 5, 0]}>
                         <meshBasicMaterial color="#ffeedd" />
                     </Box>
-                    {/* Light source */}
-                    <pointLight
-                        position={[l.x < 0 ? 0.4 : -0.4, 4.8, 0]}
-                        color="#ffe6cc"
-                        intensity={2}
-                        distance={20}
-                        decay={2}
-                    />
                 </group>
             ))}
 
