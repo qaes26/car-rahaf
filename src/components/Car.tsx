@@ -5,6 +5,7 @@ import { useFrame } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
 import * as THREE from 'three';
 import { useStore } from '@/store';
+import { motion } from 'framer-motion';
 
 const messages = [
     "رهف... أنت أجمل صدفة في حياتي",
@@ -143,22 +144,25 @@ export default function Car({ position, speed, messageIndex }: CarProps) {
                     distanceFactor={6}
                     zIndexRange={[100, 0]}
                 >
-                    <div style={{
-                        width: '300px',
-                        textAlign: 'center',
-                        fontFamily: 'var(--font-cairo), sans-serif',
-                        fontSize: '18px',
-                        fontWeight: 600,
-                        color: '#fff',
-                        textShadow: '0 0 10px rgba(255,100,150,0.8), 0 0 20px rgba(255,100,150,0.4)',
-                        background: 'radial-gradient(ellipse at center, rgba(255,100,150,0.15) 0%, rgba(0,0,0,0) 70%)',
-                        padding: '20px',
-                        borderRadius: '50%',
-                        opacity: 0,
-                        animation: 'fadeIn 2s forwards'
-                    }}>
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 1.5, ease: "easeOut" }}
+                        style={{
+                            width: '300px',
+                            textAlign: 'center',
+                            fontFamily: 'var(--font-cairo), sans-serif',
+                            fontSize: '18px',
+                            fontWeight: 600,
+                            color: '#fff',
+                            textShadow: '0 0 10px rgba(255,100,150,0.8), 0 0 20px rgba(255,100,150,0.4)',
+                            background: 'radial-gradient(ellipse at center, rgba(255,100,150,0.15) 0%, rgba(0,0,0,0) 70%)',
+                            padding: '20px',
+                            borderRadius: '50%'
+                        }}
+                    >
                         {messages[currentIndex % messages.length]}
-                    </div>
+                    </motion.div>
                 </Html>
             )}
         </group>

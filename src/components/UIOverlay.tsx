@@ -23,6 +23,7 @@ export default function UIOverlay() {
             // Wait for main text to be fully shown (2s fade in + 1.5s delay for second text + 2s fade in + some buffer)
             // Let's say we wait 6 seconds total before showing phrases on cars
             setTimeout(() => {
+                setShowMainText(false);
                 setShowPhrases(true); // Tell cars to start showing their text!
             }, 6500);
         }
@@ -87,6 +88,7 @@ export default function UIOverlay() {
                         <motion.div
                             initial={{ opacity: 0, scale: 0.9, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 1.1, filter: "blur(10px)", transition: { duration: 1.5 } }}
                             transition={{ duration: 2, ease: "easeOut" }}
                             className="text-center"
                         >
