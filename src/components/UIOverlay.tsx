@@ -43,7 +43,9 @@ export default function UIOverlay() {
 
             {/* Invisible Audio Element */}
             <audio id="bg-music" loop>
-                <source src="https://assets.mixkit.co/music/preview/mixkit-romantic-acoustic-guitar-253.mp3" type="audio/mpeg" />
+                <source src="/bg-music.webm" type="audio/webm" />
+                <source src="/bg-music.m4a" type="audio/mp4" />
+                <source src="/bg-music.mp3" type="audio/mpeg" />
             </audio>
 
             {/* Start Screen */}
