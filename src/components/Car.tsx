@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
 import * as THREE from 'three';
+import { useStore } from '@/store';
 
 const messages = [
     "رهف... أنت أجمل صدفة في حياتي",
@@ -67,6 +68,7 @@ interface CarProps {
 export default function Car({ position, speed, messageIndex }: CarProps) {
     const groupRef = useRef<THREE.Group>(null);
     const zStart = position[2];
+    const showPhrases = useStore(state => state.showPhrases);
 
     // Each car will have its own current message index, initially offset by its prop
     const [currentIndex, setCurrentIndex] = useState(messageIndex);
@@ -132,29 +134,33 @@ export default function Car({ position, speed, messageIndex }: CarProps) {
             </mesh>
 
             {/* Floating Glowing Message */}
-            <Html
-                position={[0, 2.5, 0]}
-                center
-                transform
-                sprite
-                distanceFactor={6}
-                zIndexRange={[100, 0]}
-            >
-                <div style={{
-                    width: '300px',
-                    textAlign: 'center',
-                    fontFamily: 'var(--font-cairo), sans-serif',
-                    fontSize: '18px',
-                    fontWeight: 600,
-                    color: '#fff',
-                    textShadow: '0 0 10px rgba(255,100,150,0.8), 0 0 20px rgba(255,100,150,0.4)',
-                    background: 'radial-gradient(ellipse at center, rgba(255,100,150,0.15) 0%, rgba(0,0,0,0) 70%)',
-                    padding: '20px',
-                    borderRadius: '50%'
-                }}>
-                    {messages[currentIndex % messages.length]}
-                </div>
-            </Html>
+            {showPhrases && (
+                <Html
+                    position={[0, 2.5, 0]}
+                    center
+                    transform
+                    sprite
+                    distanceFactor={6}
+                    zIndexRange={[100, 0]}
+                >
+                    <div style={{
+                        width: '300px',
+                        textAlign: 'center',
+                        fontFamily: 'var(--font-cairo), sans-serif',
+                        fontSize: '18px',
+                        fontWeight: 600,
+                        color: '#fff',
+                        textShadow: '0 0 10px rgba(255,100,150,0.8), 0 0 20px rgba(255,100,150,0.4)',
+                        background: 'radial-gradient(ellipse at center, rgba(255,100,150,0.15) 0%, rgba(0,0,0,0) 70%)',
+                        padding: '20px',
+                        borderRadius: '50%',
+                        opacity: 0,
+                        animation: 'fadeIn 2s forwards'
+                    }}>
+                        {messages[currentIndex % messages.length]}
+                    </div>
+                </Html>
+            )}
         </group>
     );
 }

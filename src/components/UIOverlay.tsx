@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, Volume2, VolumeX, Play } from 'lucide-react';
+import { Heart, Volume2, VolumeX } from 'lucide-react';
+import { useStore } from '@/store';
 
 export default function UIOverlay() {
     const [started, setStarted] = useState(false);
@@ -10,13 +11,22 @@ export default function UIOverlay() {
     const [audioPlayed, setAudioPlayed] = useState(false);
     const [muted, setMuted] = useState(false);
 
+    const setShowPhrases = useStore(state => state.setShowPhrases);
+
     useEffect(() => {
         if (started) {
+            // Show main text after 1 second
             setTimeout(() => {
                 setShowMainText(true);
             }, 1000);
+
+            // Wait for main text to be fully shown (2s fade in + 1.5s delay for second text + 2s fade in + some buffer)
+            // Let's say we wait 6 seconds total before showing phrases on cars
+            setTimeout(() => {
+                setShowPhrases(true); // Tell cars to start showing their text!
+            }, 6500);
         }
-    }, [started]);
+    }, [started, setShowPhrases]);
 
     const handleStart = () => {
         setStarted(true);
