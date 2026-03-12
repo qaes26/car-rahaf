@@ -5,7 +5,6 @@ import { useFrame } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
 import * as THREE from 'three';
 import { useStore } from '@/store';
-import { motion } from 'framer-motion';
 
 const messages = [
     "رهف... أنت أجمل صدفة في حياتي",
@@ -80,7 +79,6 @@ export default function Car({ position, speed, messageIndex }: CarProps) {
             // إعادة السيارة للخلف لتبدأ من جديد ودائماً أمام الكاميرا
             if (groupRef.current.position.z > state.camera.position.z + 10) {
                 groupRef.current.position.z = state.camera.position.z - 80 - (Math.random() * 40);
-                // اختيار رسالة جديدة عشوائية
                 setCurrentIndex(Math.floor(Math.random() * messages.length));
             }
         }
@@ -141,10 +139,15 @@ export default function Car({ position, speed, messageIndex }: CarProps) {
                     distanceFactor={6}
                     zIndexRange={[100, 0]}
                 >
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 1.5, ease: "easeOut" }}
+                    <style>
+                        {`
+                            @keyframes popInFade {
+                                0% { opacity: 0; transform: scale(0.8); }
+                                100% { opacity: 1; transform: scale(1); }
+                            }
+                        `}
+                    </style>
+                    <div
                         style={{
                             width: '300px',
                             textAlign: 'center',
@@ -156,11 +159,12 @@ export default function Car({ position, speed, messageIndex }: CarProps) {
                             background: 'radial-gradient(ellipse at center, rgba(255,100,150,0.15) 0%, rgba(0,0,0,0) 70%)',
                             padding: '20px',
                             borderRadius: '50%',
-                            pointerEvents: 'auto'
+                            pointerEvents: 'auto',
+                            animation: 'popInFade 1.5s ease-out forwards'
                         }}
                     >
                         {messages[currentIndex % messages.length]}
-                    </motion.div>
+                    </div>
                 </Html>
             )}
         </group>
