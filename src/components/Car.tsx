@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { Html, Text } from '@react-three/drei';
+import { Html } from '@react-three/drei';
 import * as THREE from 'three';
 
 const messages = [
@@ -68,6 +68,12 @@ export default function Car({ position, speed, messageIndex }: CarProps) {
     const groupRef = useRef<THREE.Group>(null);
     const zStart = position[2];
 
+    // Each car will have its own current message index, initially offset by its prop
+    const [currentIndex, setCurrentIndex] = useState(messageIndex);
+
+    // Keep track of when we reset the Z position to change the message
+    const [hasReset, setHasReset] = useState(false);
+
     useFrame((state, delta) => {
         if (groupRef.current) {
             groupRef.current.position.z += speed * delta;
@@ -75,6 +81,15 @@ export default function Car({ position, speed, messageIndex }: CarProps) {
             // Reset car when it goes too far
             if (groupRef.current.position.z > 20) {
                 groupRef.current.position.z = zStart - 100;
+
+                // When car teleports back, it's a new "lap", so change the message randomly or sequentially
+                if (!hasReset) {
+                    setCurrentIndex((prev) => (prev + 6) % messages.length); // Skip 6 ahead so all cars get new messages
+                    setHasReset(true);
+                }
+            } else if (groupRef.current.position.z < 10) {
+                // allow reset flag to clear once it moves forward a bit
+                if (hasReset) setHasReset(false);
             }
         }
     });
@@ -145,7 +160,7 @@ export default function Car({ position, speed, messageIndex }: CarProps) {
                     padding: '20px',
                     borderRadius: '50%'
                 }}>
-                    {messages[messageIndex % messages.length]}
+                    {messages[currentIndex % messages.length]}
                 </div>
             </Html>
         </group>
