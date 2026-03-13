@@ -73,13 +73,11 @@ export default function Car({ position, speed, messageIndex }: CarProps) {
 
     useFrame((state, delta) => {
         if (groupRef.current) {
-            // السيارة تمشي باتجاه الكاميرا (+z)
             groupRef.current.position.z += speed * delta;
 
-            // الكاميرا تتجه للأمام (-z). إذا تجاوزت السيارة الكاميرا وأصبحت خلفها:
+            // Reset car far behind camera when it passes the camera
             if (groupRef.current.position.z > state.camera.position.z + 15) {
-                // يتم إرجاع السيارة لتبدأ من مسافة بعيدة في مقدمة الكاميرا الحالية
-                groupRef.current.position.z = state.camera.position.z - 80 - (Math.random() * 40);
+                groupRef.current.position.z = state.camera.position.z - 60 - (Math.random() * 50);
                 setCurrentIndex(Math.floor(Math.random() * messages.length));
             }
         }
@@ -120,37 +118,48 @@ export default function Car({ position, speed, messageIndex }: CarProps) {
             </mesh>
 
             {/* Floating Glowing Message */}
-            <Html
-                position={[0, 2.5, 0]}
-                center
-                transform
-                sprite
-                occlude={false} // منع اختفاء العنصر نهائياً
-                distanceFactor={6}
-                zIndexRange={[100, 0]}
-                style={{
-                    opacity: showPhrases ? 1 : 0,
-                    pointerEvents: showPhrases ? 'auto' : 'none',
-                    transition: 'opacity 1s ease-in-out'
-                }}
-            >
-                <div
+            {showPhrases && (
+                <Html
+                    position={[0, 2.5, 0]}
+                    center
+                    occlude={false}
+                    zIndexRange={[100, 0]}
                     style={{
-                        width: '300px',
-                        textAlign: 'center',
-                        fontFamily: 'var(--font-cairo), sans-serif',
-                        fontSize: '18px',
-                        fontWeight: 600,
-                        color: '#fff',
-                        textShadow: '0 0 10px rgba(255,100,150,0.8), 0 0 20px rgba(255,100,150,0.4)',
-                        background: 'radial-gradient(ellipse at center, rgba(255,100,150,0.15) 0%, rgba(0,0,0,0) 70%)',
-                        padding: '20px',
-                        borderRadius: '50%',
+                        zIndex: 100,
+                        width: 'max-content',
+                        pointerEvents: 'none'
                     }}
                 >
-                    {messages[currentIndex % messages.length]}
-                </div>
-            </Html>
+                    <style>
+                        {`
+                            @keyframes fadeInUpMsg {
+                                0% { opacity: 0; transform: translateY(15px); }
+                                100% { opacity: 1; transform: translateY(0); }
+                            }
+                        `}
+                    </style>
+                    <div
+                        style={{
+                            maxWidth: '280px',
+                            textAlign: 'center',
+                            fontFamily: 'var(--font-cairo), sans-serif',
+                            fontSize: '17px',
+                            fontWeight: 600,
+                            color: '#fff',
+                            textShadow: '0 0 10px rgba(255,100,150,0.8), 0 0 20px rgba(255,100,150,0.4)',
+                            background: 'rgba(20, 0, 10, 0.5)',
+                            border: '1px solid rgba(255,100,150,0.3)',
+                            padding: '12px 24px',
+                            borderRadius: '30px',
+                            backdropFilter: 'blur(8px)',
+                            WebkitBackdropFilter: 'blur(8px)',
+                            animation: 'fadeInUpMsg 1s ease-out forwards'
+                        }}
+                    >
+                        {messages[currentIndex % messages.length]}
+                    </div>
+                </Html>
+            )}
         </group>
     );
 }
