@@ -75,8 +75,9 @@ export default function Car({ position, speed, messageIndex }: CarProps) {
         if (groupRef.current) {
             groupRef.current.position.z += speed * delta;
 
-            if (groupRef.current.position.z > state.camera.position.z + 10) {
-                groupRef.current.position.z = state.camera.position.z - 80 - (Math.random() * 40);
+            // Reset car far behind camera when it passes the camera
+            if (groupRef.current.position.z > state.camera.position.z + 15) {
+                groupRef.current.position.z = state.camera.position.z - 60 - (Math.random() * 50);
                 setCurrentIndex(Math.floor(Math.random() * messages.length));
             }
         }
@@ -121,8 +122,10 @@ export default function Car({ position, speed, messageIndex }: CarProps) {
                 <Html
                     position={[0, 2.5, 0]}
                     center
+                    occlude={false}
+                    zIndexRange={[100, 0]}
                     style={{
-                        zIndex: 50,
+                        zIndex: 100,
                         width: 'max-content',
                         pointerEvents: 'none'
                     }}
