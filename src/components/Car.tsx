@@ -87,24 +87,13 @@ export default function Car({ position, speed, messageIndex }: CarProps) {
             {/* Car Body */}
             <mesh position={[0, 0.4, 0]} castShadow receiveShadow>
                 <boxGeometry args={[1.6, 0.6, 3]} />
-                <meshPhysicalMaterial
-                    color="#050510"
-                    roughness={0.2}
-                    metalness={0.8}
-                    clearcoat={1}
-                    clearcoatRoughness={0.1}
-                />
+                <meshPhysicalMaterial color="#050510" roughness={0.2} metalness={0.8} clearcoat={1} clearcoatRoughness={0.1} />
             </mesh>
 
             {/* Car Cabin */}
             <mesh position={[0, 0.8, -0.2]} castShadow receiveShadow>
                 <boxGeometry args={[1.4, 0.5, 1.5]} />
-                <meshPhysicalMaterial
-                    color="#000"
-                    roughness={0.1}
-                    transmission={0.9}
-                    thickness={0.5}
-                />
+                <meshPhysicalMaterial color="#000" roughness={0.1} transmission={0.9} thickness={0.5} />
             </mesh>
 
             {/* Headlights */}
@@ -128,36 +117,46 @@ export default function Car({ position, speed, messageIndex }: CarProps) {
             </mesh>
 
             {/* Floating Glowing Message */}
-            <Html
-                position={[0, 2.5, 0]}
-                center
-                transform
-                sprite
-                distanceFactor={6}
-                zIndexRange={[100, 0]}
-            >
-                <div
+            {showPhrases && (
+                <Html
+                    position={[0, 2.5, 0]}
+                    center
                     style={{
-                        width: '300px',
-                        textAlign: 'center',
-                        fontFamily: 'var(--font-cairo), sans-serif',
-                        fontSize: '18px',
-                        fontWeight: 600,
-                        color: '#fff',
-                        textShadow: '0 0 10px rgba(255,100,150,0.8), 0 0 20px rgba(255,100,150,0.4)',
-                        background: 'radial-gradient(ellipse at center, rgba(255,100,150,0.15) 0%, rgba(0,0,0,0) 70%)',
-                        padding: '20px',
-                        borderRadius: '50%',
-                        opacity: showPhrases ? 1 : 0,
-                        visibility: showPhrases ? 'visible' : 'hidden',
-                        transform: showPhrases ? 'scale(1)' : 'scale(0.8)',
-                        transition: 'all 1.5s ease-out',
-                        pointerEvents: showPhrases ? 'auto' : 'none'
+                        zIndex: 50,
+                        width: 'max-content',
+                        pointerEvents: 'none'
                     }}
                 >
-                    {messages[currentIndex % messages.length]}
-                </div>
-            </Html>
+                    <style>
+                        {`
+                            @keyframes fadeInUpMsg {
+                                0% { opacity: 0; transform: translateY(15px); }
+                                100% { opacity: 1; transform: translateY(0); }
+                            }
+                        `}
+                    </style>
+                    <div
+                        style={{
+                            maxWidth: '280px',
+                            textAlign: 'center',
+                            fontFamily: 'var(--font-cairo), sans-serif',
+                            fontSize: '17px',
+                            fontWeight: 600,
+                            color: '#fff',
+                            textShadow: '0 0 10px rgba(255,100,150,0.8), 0 0 20px rgba(255,100,150,0.4)',
+                            background: 'rgba(20, 0, 10, 0.5)',
+                            border: '1px solid rgba(255,100,150,0.3)',
+                            padding: '12px 24px',
+                            borderRadius: '30px',
+                            backdropFilter: 'blur(8px)',
+                            WebkitBackdropFilter: 'blur(8px)',
+                            animation: 'fadeInUpMsg 1s ease-out forwards'
+                        }}
+                    >
+                        {messages[currentIndex % messages.length]}
+                    </div>
+                </Html>
+            )}
         </group>
     );
 }
