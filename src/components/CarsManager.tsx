@@ -6,22 +6,21 @@ import Car from './Car';
 export default function CarsManager() {
     const cars = useMemo(() => {
         const list = [];
-        const numCars = 6;
-        let currentZ = -10;
+        const numCars = 10;
 
         for (let i = 0; i < numCars; i++) {
             // Alternate lanes: right (+2.5) and left (-2.5) slightly randomized
-            const laneX = (i % 2 === 0 ? 2 : -2) + (Math.random() * 1 - 0.5);
-            const speed = 6 + Math.random() * 4;
+            const laneX = (i % 2 === 0 ? 2.2 : -2.2) + (Math.random() * 0.6 - 0.3);
+            const speed = 5 + Math.random() * 5;
+            // Spread cars from -10 to -90 along Z so they're immediately visible
+            const startZ = -10 - i * 12;
 
             list.push({
                 id: i,
-                position: [laneX, 0, currentZ] as [number, number, number],
+                position: [laneX, 0, startZ] as [number, number, number],
                 speed,
                 messageIndex: i
             });
-
-            currentZ -= 20 + Math.random() * 20; // Spread cars out on the Z-axis
         }
 
         return list;
