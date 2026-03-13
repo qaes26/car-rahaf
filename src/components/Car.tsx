@@ -69,14 +69,12 @@ export default function Car({ position, speed, messageIndex }: CarProps) {
     const groupRef = useRef<THREE.Group>(null);
     const showPhrases = useStore(state => state.showPhrases);
 
-    // Each car will have its own current message index, initially offset by its prop
     const [currentIndex, setCurrentIndex] = useState(messageIndex);
 
     useFrame((state, delta) => {
         if (groupRef.current) {
             groupRef.current.position.z += speed * delta;
 
-            // إعادة السيارة للخلف لتبدأ من جديد ودائماً أمام الكاميرا
             if (groupRef.current.position.z > state.camera.position.z + 10) {
                 groupRef.current.position.z = state.camera.position.z - 80 - (Math.random() * 40);
                 setCurrentIndex(Math.floor(Math.random() * messages.length));
@@ -86,7 +84,7 @@ export default function Car({ position, speed, messageIndex }: CarProps) {
 
     return (
         <group ref={groupRef} position={position}>
-            {/* Car Body (Stylized) */}
+            {/* Car Body */}
             <mesh position={[0, 0.4, 0]} castShadow receiveShadow>
                 <boxGeometry args={[1.6, 0.6, 3]} />
                 <meshPhysicalMaterial
@@ -130,43 +128,36 @@ export default function Car({ position, speed, messageIndex }: CarProps) {
             </mesh>
 
             {/* Floating Glowing Message */}
-            {showPhrases && (
-                <Html
-                    position={[0, 2.5, 0]}
-                    center
-                    transform
-                    sprite
-                    distanceFactor={6}
-                    zIndexRange={[100, 0]}
+            <Html
+                position={[0, 2.5, 0]}
+                center
+                transform
+                sprite
+                distanceFactor={6}
+                zIndexRange={[100, 0]}
+            >
+                <div
+                    style={{
+                        width: '300px',
+                        textAlign: 'center',
+                        fontFamily: 'var(--font-cairo), sans-serif',
+                        fontSize: '18px',
+                        fontWeight: 600,
+                        color: '#fff',
+                        textShadow: '0 0 10px rgba(255,100,150,0.8), 0 0 20px rgba(255,100,150,0.4)',
+                        background: 'radial-gradient(ellipse at center, rgba(255,100,150,0.15) 0%, rgba(0,0,0,0) 70%)',
+                        padding: '20px',
+                        borderRadius: '50%',
+                        opacity: showPhrases ? 1 : 0,
+                        visibility: showPhrases ? 'visible' : 'hidden',
+                        transform: showPhrases ? 'scale(1)' : 'scale(0.8)',
+                        transition: 'all 1.5s ease-out',
+                        pointerEvents: showPhrases ? 'auto' : 'none'
+                    }}
                 >
-                    <style>
-                        {`
-                            @keyframes popInFade {
-                                0% { opacity: 0; transform: scale(0.8); }
-                                100% { opacity: 1; transform: scale(1); }
-                            }
-                        `}
-                    </style>
-                    <div
-                        style={{
-                            width: '300px',
-                            textAlign: 'center',
-                            fontFamily: 'var(--font-cairo), sans-serif',
-                            fontSize: '18px',
-                            fontWeight: 600,
-                            color: '#fff',
-                            textShadow: '0 0 10px rgba(255,100,150,0.8), 0 0 20px rgba(255,100,150,0.4)',
-                            background: 'radial-gradient(ellipse at center, rgba(255,100,150,0.15) 0%, rgba(0,0,0,0) 70%)',
-                            padding: '20px',
-                            borderRadius: '50%',
-                            pointerEvents: 'auto',
-                            animation: 'popInFade 1.5s ease-out forwards'
-                        }}
-                    >
-                        {messages[currentIndex % messages.length]}
-                    </div>
-                </Html>
-            )}
+                    {messages[currentIndex % messages.length]}
+                </div>
+            </Html>
         </group>
     );
 }
